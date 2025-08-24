@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card max-w-xl mx-auto text-center">
+  <h2 class="text-2xl font-semibold mb-2">Upload a Video</h2>
+  <p class="text-gray-400 mb-4">Supported formats: .mp4, .avi, .mov</p>
+
+  <form method="post" enctype="multipart/form-data" class="upload-form">
+    {% csrf_token %}
+    <label class="upload-area block border-2 border-dashed border-gray-600 rounded-xl p-10 cursor-pointer hover:border-blue-400 transition">
+      <span class="block text-4xl mb-2">⬆</span>
+      <span class="upload-text">Drag & Drop your video here or click to browse</span>
+      <input id="video" type="file" name="video" accept="video/*" required class="hidden" onchange="showChosen(this)">
+    </label>
+    <div id="fileName" class="filename mt-3 text-sm text-green-400"></div>
+    <button class="btn w-full mt-5">Analyze Video</button>
+  </form>
+
+  <div id="loadingBar" class="hidden mt-6">
+    <div class="h-2 bg-gray-700 rounded-full overflow-hidden">
+      <div id="progress" class="h-2 bg-gradient-to-r from-green-400 to-blue-500 animate-pulse w-0"></div>
+    </div>
+    <p class="mt-2 text-gray-400">Analyzing...</p>
+  </div>
+</div>
+
+<script>
+function showChosen(inp){
+  const div = document.getElementById('fileName');
+  if (inp.files && inp.files[0]) {
+    div.innerText = "Selected: " + inp.files[0].name;
+  } else {
+    div.innerText = "";
+  }
+}
+document.querySelector("form").addEventListener("submit", (e)=>{
+  document.getElementById("loadingBar").classList.remove("hidden");
+  let prog = document.getElementById("progress");
+  gsap.to(prog, {width:"100%", duration:3, repeat:-1, yoyo:true, ease:"power2.inOut"});
+});
+</script>
+{% endblock %}
